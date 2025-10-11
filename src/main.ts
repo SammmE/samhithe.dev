@@ -36,7 +36,7 @@ interface Particle {
 
 const stars: Star[] = [];
 const particles: Particle[] = [];
-const starCount = 200;
+const starCount = 500;
 let gravityEnabled = false;
 let connectionsEnabled = true;
 let attractionMode = false;
