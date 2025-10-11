@@ -19,6 +19,8 @@ interface Star {
     opacity: number;
     hue?: number;
     mass?: number;
+    depth: number;
+    baseY: number;
 }
 
 interface Particle {
@@ -55,6 +57,7 @@ let eventHorizonRadius = 30;
 const accretionDiskRadius = 200;
 const schwarzschildConstant = 2;
 const speedOfLight = 10;
+const PARALLAX_SPEED = 0.5; // Multiplier for parallax effect (0.5 = slower, 2.0 = faster)
 
 const mouse = { x: width / 2, y: height / 2 };
 
@@ -66,7 +69,10 @@ const bigBangCenter = { x: width / 2, y: height / 2 };
 let currentSection = 0;
 const sections = ['landing', 'about', 'projects', 'contact'];
 let isTransitioning = false;
-let sectionStarIntensity = 1;
+let targetScrollY = 0;
+const scrollSmoothing = 0.05; // Slower, smoother interpolation
+let scrollVelocity = 0;
+const velocityDamping = 0.92;
 
 function updateControlUI() {
     const controls = {
@@ -96,6 +102,7 @@ for (let i = 0; i < starCount; i++) {
     const radius = Math.random() * 1.5 + 0.5;
     const angle = Math.random() * Math.PI * 2;
     const speed = (Math.random() * 0.8 + 0.4) * 3.5;
+    const depth = Math.random(); // 0 = far, 1 = near
 
     stars.push({
         x: bigBangCenter.x,
@@ -105,7 +112,9 @@ for (let i = 0; i < starCount; i++) {
         vy: Math.sin(angle) * speed,
         opacity: 0,
         hue: Math.random() * 360,
-        mass: radius * radius * Math.PI
+        mass: radius * radius * Math.PI,
+        depth: depth,
+        baseY: bigBangCenter.y
     });
 }
 
@@ -397,18 +406,35 @@ function animate() {
         ctx.stroke();
     }
 
-    stars.forEach(star => {
-        star.x += star.vx * speedMultiplier;
-        star.y += star.vy * speedMultiplier;
+    // Smooth scroll interpolation with velocity tracking
+    const scrollDiff = window.scrollY - targetScrollY;
+    scrollVelocity = scrollVelocity * velocityDamping + scrollDiff * (1 - velocityDamping);
+    targetScrollY += scrollVelocity * scrollSmoothing;
 
-        if (star.x < 0) star.x = width;
-        if (star.x > width) star.x = 0;
-        if (star.y < 0) star.y = height;
-        if (star.y > height) star.y = 0;
+    stars.forEach((star) => {
+        // Enhanced multi-layer parallax with exponential depth mapping
+        // Creates distinct foreground, midground, and background layers
+        const depthCurve = Math.pow(star.depth, 2.2); // Stronger exponential separation
+        const parallaxFactor = 0.005 + depthCurve * 0.12; // Smooth & cinematic
+        const scrollOffset = scrollVelocity * parallaxFactor * PARALLAX_SPEED;
 
-        if (colorShiftEnabled && star.hue !== undefined) {
-            star.hue = (star.hue + 0.5) % 360;
-        }
+
+        // Add subtle floating motion that varies by depth
+        const mouseInfluence = 0.02 * PARALLAX_SPEED; // Smaller = slower response
+        const parallaxX = (mouse.x - width / 2) * (1 - depthCurve) * mouseInfluence;
+        const parallaxY = (mouse.y - height / 2) * (1 - depthCurve) * mouseInfluence * 0.6;
+
+        const time = Date.now() * 0.0002;
+        const floatX = Math.sin(time + star.x * 0.01) * (1 - depthCurve) * 0.2;
+        const floatY = Math.cos(time + star.y * 0.01) * (1 - depthCurve) * 0.2;
+
+        star.x += (star.vx + parallaxX + floatX) * speedMultiplier;
+        star.y += (star.vy + parallaxY + floatY + scrollOffset) * speedMultiplier;
+
+        if (star.x < -100) star.x = width + 100;
+        if (star.x > width + 100) star.x = -100;
+        if (star.y < -100) star.y = height + 100;
+        if (star.y > height + 100) star.y = -100;
 
         if (warpSpeedEnabled) {
             const speed = Math.sqrt(star.vx ** 2 + star.vy ** 2);
@@ -439,14 +465,37 @@ function animate() {
         }
 
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        // Enhanced depth perception: far stars are much smaller and dimmer
+        const renderDepth = Math.pow(star.depth, 1.2);
+        const depthSize = star.radius * (0.3 + renderDepth * 0.7);
+        const depthOpacity = star.opacity * (0.2 + renderDepth * 0.8);
+
+        ctx.arc(star.x, star.y, depthSize, 0, Math.PI * 2);
 
         if (colorShiftEnabled && star.hue !== undefined) {
-            ctx.fillStyle = `hsla(${star.hue}, 80%, 70%, ${star.opacity * sectionStarIntensity})`;
+            // Far stars shift toward blue (atmospheric perspective)
+            const atmosphericHue = star.hue + (1 - star.depth) * 20;
+            const atmosphericSaturation = 80 - (1 - star.depth) * 30;
+            ctx.fillStyle = `hsla(${atmosphericHue}, ${atmosphericSaturation}%, 70%, ${depthOpacity})`;
         } else {
-            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity * sectionStarIntensity})`;
+            // Far stars appear cooler/bluer
+            const blueShift = Math.floor((1 - star.depth) * 30);
+            ctx.fillStyle = `rgba(${255 - blueShift}, ${255 - blueShift}, 255, ${depthOpacity})`;
         }
         ctx.fill();
+
+        // Add subtle glow to nearby stars
+        if (star.depth > 0.7 && depthOpacity > 0.5) {
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, depthSize * 1.5, 0, Math.PI * 2);
+            const glowOpacity = (star.depth - 0.7) * 0.15;
+            if (colorShiftEnabled && star.hue !== undefined) {
+                ctx.fillStyle = `hsla(${star.hue}, 80%, 70%, ${glowOpacity})`;
+            } else {
+                ctx.fillStyle = `rgba(255, 255, 255, ${glowOpacity})`;
+            }
+            ctx.fill();
+        }
     });
 
     particles.forEach((particle, index) => {
@@ -476,9 +525,7 @@ window.addEventListener('resize', () => {
     height = canvas.height;
     bigBangCenter.x = width / 2;
     bigBangCenter.y = height / 2;
-});
-
-window.addEventListener('mousemove', (e) => {
+}); window.addEventListener('mousemove', (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
 });
@@ -572,90 +619,25 @@ document.querySelectorAll('.section').forEach(section => {
 function transitionStars(_fromSection: number, toSection: number) {
     isTransitioning = true;
 
-    if (toSection === 1) {
-        animateStarsToText();
-    } else if (toSection === 2) {
-        swirlAndFadeStars();
-    } else if (toSection === 3) {
-        fadeStarsToMinimal();
-    }
+    // Create a depth-aware wave effect when changing sections
+    const sectionCenterY = toSection * height + height / 2;
+    stars.forEach((star) => {
+        const distanceToSection = Math.abs(star.y - (sectionCenterY - targetScrollY));
+        if (distanceToSection < 400) {
+            const transitionDepth = Math.pow(star.depth, 1.5);
+            const rippleStrength = (1 - distanceToSection / 400) * 1.2 * transitionDepth;
+            const angle = Math.atan2(star.y - (sectionCenterY - targetScrollY), star.x - width / 2);
+
+            // Near stars react more, creating layered wave effect
+            star.vx += Math.cos(angle) * rippleStrength;
+            star.vy += Math.sin(angle) * rippleStrength;
+        }
+    });
 
     setTimeout(() => {
         isTransitioning = false;
-    }, 2000);
-}
-
-function animateStarsToText() {
-    const aboutY = window.innerHeight;
-    const textCenterX = width / 2 - 200;
-    const textCenterY = aboutY + 200;
-
-    stars.forEach((star) => {
-        const targetX = textCenterX + (Math.random() - 0.5) * 400;
-        const targetY = textCenterY + (Math.random() - 0.5) * 100;
-
-        const dx = targetX - star.x;
-        const dy = targetY - star.y;
-
-        star.vx = dx * 0.01;
-        star.vy = dy * 0.01;
-    });
-
-    setTimeout(() => {
-        stars.forEach(star => {
-            star.vx = (Math.random() - 0.5) * 0.3;
-            star.vy = (Math.random() - 0.5) * 0.3;
-        });
-    }, 1500);
-}
-
-function swirlAndFadeStars() {
-    const projectsY = window.innerHeight * 2;
-    const centerX = width / 2;
-    const centerY = projectsY;
-
-    stars.forEach((star) => {
-        const dx = centerX - star.x;
-        const dy = centerY - star.y;
-
-        const angle = Math.atan2(dy, dx);
-        const spiralAngle = angle + Math.PI / 2;
-
-        star.vx = Math.cos(spiralAngle) * 3 + dx * 0.005;
-        star.vy = Math.sin(spiralAngle) * 3 + dy * 0.005;
-    });
-
-    let fade = 0;
-    const fadeInterval = setInterval(() => {
-        fade += 0.02;
-        sectionStarIntensity = Math.max(0.3, 1 - fade);
-        if (fade >= 0.7) {
-            clearInterval(fadeInterval);
-            stars.forEach(star => {
-                star.vx = (Math.random() - 0.5) * 0.2;
-                star.vy = (Math.random() - 0.5) * 0.2;
-            });
-        }
-    }, 50);
-}
-
-function fadeStarsToMinimal() {
-    let fade = 0;
-    const fadeInterval = setInterval(() => {
-        fade += 0.03;
-        sectionStarIntensity = Math.max(0.15, sectionStarIntensity - 0.03);
-        if (fade >= 1) {
-            clearInterval(fadeInterval);
-        }
-    }, 50);
-
-    stars.forEach(star => {
-        star.vx *= 0.5;
-        star.vy *= 0.5;
-    });
-}
-
-const scrollIndicator = document.getElementById('scroll-indicator');
+    }, 1000);
+} const scrollIndicator = document.getElementById('scroll-indicator');
 window.addEventListener('scroll', () => {
     if (scrollIndicator && window.scrollY > 100) {
         scrollIndicator.style.opacity = '0';
