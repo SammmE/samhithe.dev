@@ -45,6 +45,7 @@ let trailsEnabled = false;
 let warpSpeedEnabled = false;
 let colorShiftEnabled = false;
 let blackHoleEnabled = false;
+let mouseParallaxEnabled = false;
 const gravitationalConstant = 0.5;
 const minDistance = 5;
 const maxConnectionDistance = 150;
@@ -57,7 +58,8 @@ let eventHorizonRadius = 30;
 const accretionDiskRadius = 200;
 const schwarzschildConstant = 2;
 const speedOfLight = 10;
-const PARALLAX_SPEED = 0.5; // Multiplier for parallax effect (0.5 = slower, 2.0 = faster)
+const PARALLAX_SPEED = 0.5;
+const MOUSE_PARALLAX_SPEED = 0.02;
 
 const mouse = { x: width / 2, y: height / 2 };
 
@@ -70,9 +72,15 @@ let currentSection = 0;
 const sections = ['landing', 'about', 'projects', 'contact'];
 let isTransitioning = false;
 let targetScrollY = 0;
-const scrollSmoothing = 0.05; // Slower, smoother interpolation
+const scrollSmoothing = 0.05;
 let scrollVelocity = 0;
 const velocityDamping = 0.92;
+
+const controlElements = new Map<string, Element>();
+['c', 'g', 'a', 'r', 't', 'w', 'x', 'b', 'm'].forEach(key => {
+    const element = document.querySelector(`[data-key="${key}"]`);
+    if (element) controlElements.set(key, element);
+});
 
 function updateControlUI() {
     const controls = {
@@ -83,17 +91,14 @@ function updateControlUI() {
         't': trailsEnabled,
         'w': warpSpeedEnabled,
         'x': colorShiftEnabled,
-        'b': blackHoleEnabled
+        'b': blackHoleEnabled,
+        'm': mouseParallaxEnabled
     };
 
     Object.entries(controls).forEach(([key, enabled]) => {
-        const element = document.querySelector(`[data-key="${key}"]`);
+        const element = controlElements.get(key);
         if (element) {
-            if (enabled) {
-                element.classList.add('active');
-            } else {
-                element.classList.remove('active');
-            }
+            element.classList.toggle('active', enabled);
         }
     });
 }
@@ -353,19 +358,27 @@ function animate() {
     }
 
     if (connectionsEnabled) {
-        const distances = stars.map((star, index) => ({
-            index,
-            distance: Math.sqrt((star.x - mouse.x) ** 2 + (star.y - mouse.y) ** 2)
-        }));
+        const closestStars: Array<{ star: Star, distance: number }> = [];
 
-        distances.sort((a, b) => a.distance - b.distance);
+        for (let i = 0; i < stars.length; i++) {
+            const star = stars[i];
+            const dx = star.x - mouse.x;
+            const dy = star.y - mouse.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
 
-        const closestStars = distances.slice(0, maxConnections).filter(d => d.distance < maxConnectionDistance);
+            if (distance < maxConnectionDistance) {
+                if (closestStars.length < maxConnections) {
+                    closestStars.push({ star, distance });
+                    closestStars.sort((a, b) => a.distance - b.distance);
+                } else if (distance < closestStars[maxConnections - 1].distance) {
+                    closestStars[maxConnections - 1] = { star, distance };
+                    closestStars.sort((a, b) => a.distance - b.distance);
+                }
+            }
+        }
 
-        closestStars.forEach(({ index, distance }) => {
-            const star = stars[index];
+        closestStars.forEach(({ star, distance }) => {
             const opacity = 1 - (distance / maxConnectionDistance);
-
             ctx.beginPath();
             ctx.moveTo(mouse.x, mouse.y);
             ctx.lineTo(star.x, star.y);
@@ -410,18 +423,26 @@ function animate() {
     scrollVelocity = scrollVelocity * velocityDamping + scrollDiff * (1 - velocityDamping);
     targetScrollY += scrollVelocity * scrollSmoothing;
 
+    const time = Date.now() * 0.0002;
+
     stars.forEach((star) => {
         const depthCurve = star.depth ** 2.2;
+        const invDepthCurve = 1 - depthCurve;
         const parallaxFactor = 0.005 + depthCurve * 0.12;
-        const scrollOffset = scrollVelocity * parallaxFactor * PARALLAX_SPEED;
+        const scrollOffset = -scrollVelocity * parallaxFactor * PARALLAX_SPEED;
 
-        const mouseInfluence = 0.02 * PARALLAX_SPEED;
-        const parallaxX = (mouse.x - width / 2) * (1 - depthCurve) * mouseInfluence;
-        const parallaxY = (mouse.y - height / 2) * (1 - depthCurve) * mouseInfluence * 0.6;
+        let parallaxX = 0;
+        let parallaxY = 0;
 
-        const time = Date.now() * 0.0002;
-        const floatX = Math.sin(time + star.x * 0.01) * (1 - depthCurve) * 0.2;
-        const floatY = Math.cos(time + star.y * 0.01) * (1 - depthCurve) * 0.2;
+        if (mouseParallaxEnabled) {
+            const mouseDX = mouse.x - width / 2;
+            const mouseDY = mouse.y - height / 2;
+            parallaxX = mouseDX * invDepthCurve * MOUSE_PARALLAX_SPEED;
+            parallaxY = mouseDY * invDepthCurve * MOUSE_PARALLAX_SPEED * 0.6;
+        }
+
+        const floatX = Math.sin(time + star.x * 0.01) * invDepthCurve * 0.2;
+        const floatY = Math.cos(time + star.y * 0.01) * invDepthCurve * 0.2;
 
         star.x += (star.vx + parallaxX + floatX) * speedMultiplier;
         star.y += (star.vy + parallaxY + floatY + scrollOffset) * speedMultiplier;
@@ -489,14 +510,15 @@ function animate() {
         }
     });
 
-    particles.forEach((particle, index) => {
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const particle = particles[i];
         particle.x += particle.vx;
         particle.y += particle.vy;
         particle.life--;
 
         if (particle.life <= 0) {
-            particles.splice(index, 1);
-            return;
+            particles.splice(i, 1);
+            continue;
         }
 
         const lifeRatio = particle.life / particle.maxLife;
@@ -504,7 +526,7 @@ function animate() {
         ctx.arc(particle.x, particle.y, particle.radius * lifeRatio, 0, Math.PI * 2);
         ctx.fillStyle = `hsla(${particle.hue}, 80%, 70%, ${lifeRatio * 0.8})`;
         ctx.fill();
-    });
+    }
 
     requestAnimationFrame(animate);
 }
@@ -564,6 +586,8 @@ window.addEventListener('keydown', (e) => {
             blackHoleMass = 5000;
             eventHorizonRadius = 30;
         }
+    } else if (key === 'm') {
+        mouseParallaxEnabled = !mouseParallaxEnabled;
     }
 
     updateControlUI();
