@@ -102,7 +102,7 @@ for (let i = 0; i < starCount; i++) {
     const radius = Math.random() * 1.5 + 0.5;
     const angle = Math.random() * Math.PI * 2;
     const speed = (Math.random() * 0.8 + 0.4) * 3.5;
-    const depth = Math.random(); // 0 = far, 1 = near
+    const depth = Math.random();
 
     stars.push({
         x: bigBangCenter.x,
@@ -148,7 +148,7 @@ function animate() {
         }
 
         stars.forEach((star) => {
-            const explosionCurve = Math.pow(1 - progress, 2);
+            const explosionCurve = (1 - progress) ** 2;
             const dragFactor = 0.985 + progress * 0.014;
 
             star.vx *= dragFactor;
@@ -406,21 +406,16 @@ function animate() {
         ctx.stroke();
     }
 
-    // Smooth scroll interpolation with velocity tracking
     const scrollDiff = window.scrollY - targetScrollY;
     scrollVelocity = scrollVelocity * velocityDamping + scrollDiff * (1 - velocityDamping);
     targetScrollY += scrollVelocity * scrollSmoothing;
 
     stars.forEach((star) => {
-        // Enhanced multi-layer parallax with exponential depth mapping
-        // Creates distinct foreground, midground, and background layers
-        const depthCurve = Math.pow(star.depth, 2.2); // Stronger exponential separation
-        const parallaxFactor = 0.005 + depthCurve * 0.12; // Smooth & cinematic
+        const depthCurve = star.depth ** 2.2;
+        const parallaxFactor = 0.005 + depthCurve * 0.12;
         const scrollOffset = scrollVelocity * parallaxFactor * PARALLAX_SPEED;
 
-
-        // Add subtle floating motion that varies by depth
-        const mouseInfluence = 0.02 * PARALLAX_SPEED; // Smaller = slower response
+        const mouseInfluence = 0.02 * PARALLAX_SPEED;
         const parallaxX = (mouse.x - width / 2) * (1 - depthCurve) * mouseInfluence;
         const parallaxY = (mouse.y - height / 2) * (1 - depthCurve) * mouseInfluence * 0.6;
 
@@ -465,26 +460,22 @@ function animate() {
         }
 
         ctx.beginPath();
-        // Enhanced depth perception: far stars are much smaller and dimmer
-        const renderDepth = Math.pow(star.depth, 1.2);
+        const renderDepth = star.depth ** 1.2;
         const depthSize = star.radius * (0.3 + renderDepth * 0.7);
         const depthOpacity = star.opacity * (0.2 + renderDepth * 0.8);
 
         ctx.arc(star.x, star.y, depthSize, 0, Math.PI * 2);
 
         if (colorShiftEnabled && star.hue !== undefined) {
-            // Far stars shift toward blue (atmospheric perspective)
             const atmosphericHue = star.hue + (1 - star.depth) * 20;
             const atmosphericSaturation = 80 - (1 - star.depth) * 30;
             ctx.fillStyle = `hsla(${atmosphericHue}, ${atmosphericSaturation}%, 70%, ${depthOpacity})`;
         } else {
-            // Far stars appear cooler/bluer
             const blueShift = Math.floor((1 - star.depth) * 30);
             ctx.fillStyle = `rgba(${255 - blueShift}, ${255 - blueShift}, 255, ${depthOpacity})`;
         }
         ctx.fill();
 
-        // Add subtle glow to nearby stars
         if (star.depth > 0.7 && depthOpacity > 0.5) {
             ctx.beginPath();
             ctx.arc(star.x, star.y, depthSize * 1.5, 0, Math.PI * 2);
@@ -619,16 +610,14 @@ document.querySelectorAll('.section').forEach(section => {
 function transitionStars(_fromSection: number, toSection: number) {
     isTransitioning = true;
 
-    // Create a depth-aware wave effect when changing sections
     const sectionCenterY = toSection * height + height / 2;
     stars.forEach((star) => {
         const distanceToSection = Math.abs(star.y - (sectionCenterY - targetScrollY));
         if (distanceToSection < 400) {
-            const transitionDepth = Math.pow(star.depth, 1.5);
+            const transitionDepth = star.depth ** 1.5;
             const rippleStrength = (1 - distanceToSection / 400) * 1.2 * transitionDepth;
             const angle = Math.atan2(star.y - (sectionCenterY - targetScrollY), star.x - width / 2);
 
-            // Near stars react more, creating layered wave effect
             star.vx += Math.cos(angle) * rippleStrength;
             star.vy += Math.sin(angle) * rippleStrength;
         }
