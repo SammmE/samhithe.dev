@@ -1,4 +1,4 @@
-const About = () => {
+export default function About() {
     return (
         <div className="max-w-3xl space-y-12">
             <div className="space-y-6">
@@ -7,7 +7,7 @@ const About = () => {
                     I am a high school senior at Novi High School with a 1510 SAT, intending to major in Computer Engineering.
                 </p>
                 <p className="text-gray-300 leading-relaxed text-lg">
-                    While many developers stay in the application layer, I prefer the 'engine room.' My passion lies in Systems Engineering—understanding how software interacts with hardware at the atomic level. Whether it's writing bootloaders in Assembly or designing flight controllers for VTOL drones, I build systems where performance and reliability are non-negotiable.
+                    While many developers stay in the application layer, I prefer the &apos;engine room.&apos; My passion lies in Systems Engineering—understanding how software interacts with hardware at the atomic level. Whether it&apos;s writing bootloaders in Assembly or designing flight controllers for VTOL drones, I build systems where performance and reliability are non-negotiable.
                 </p>
             </div>
 
@@ -53,6 +53,4 @@ const About = () => {
             </div>
         </div>
     );
-};
-
-export default About;
+}

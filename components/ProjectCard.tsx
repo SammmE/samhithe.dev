@@ -37,7 +37,7 @@ const ProjectCard = ({ title, problem, stack, hurdle, tags, link }: ProjectCardP
 
             <div>
                 <h4 className="text-xs font-mono uppercase text-gray-500 mb-1">The Hardest Part</h4>
-                <p className="text-sm text-gray-300 italic">"{hurdle}"</p>
+                <p className="text-sm text-gray-300 italic">&quot;{hurdle}&quot;</p>
             </div>
 
             {tags && (

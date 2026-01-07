@@ -1,22 +1,22 @@
-import { useParams, Link } from 'react-router-dom';
-import { posts } from '../data/posts';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { posts } from '@/data/posts';
 
-const BlogPost = () => {
-    const { id } = useParams<{ id: string }>();
+interface PageProps {
+    params: Promise<{ id: string }>;
+}
+
+export default async function BlogPost({ params }: PageProps) {
+    const { id } = await params;
     const post = posts.find(p => p.id === id);
 
     if (!post) {
-        return (
-            <div className="text-center py-20">
-                <h2 className="text-2xl font-bold text-white mb-4">404: Post Not Found</h2>
-                <Link to="/log" className="text-tech-blue hover:underline">Return to Logbook</Link>
-            </div>
-        );
+        notFound();
     }
 
     return (
         <article className="max-w-3xl mx-auto">
-            <Link to="/log" className="text-xs font-mono text-gray-500 hover:text-white mb-8 block">&lt;-- Back to Logbook</Link>
+            <Link href="/log" className="text-xs font-mono text-gray-500 hover:text-white mb-8 block">&lt;-- Back to Logbook</Link>
 
             <header className="mb-10 border-b border-white/10 pb-6">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">{post.title}</h1>
@@ -36,6 +36,10 @@ const BlogPost = () => {
             />
         </article>
     );
-};
+}
 
-export default BlogPost;
+export function generateStaticParams() {
+    return posts.map((post) => ({
+        id: post.id,
+    }));
+}

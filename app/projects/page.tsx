@@ -1,7 +1,7 @@
-import ProjectCard from '../components/ProjectCard';
-import { projects } from '../data/projects';
+import ProjectCard from '@/components/ProjectCard';
+import { projects } from '@/data/projects';
 
-const Projects = () => {
+export default function Projects() {
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-2">
@@ -19,6 +19,4 @@ const Projects = () => {
             </div>
         </div>
     );
-};
-
-export default Projects;
+}

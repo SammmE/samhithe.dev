@@ -1,13 +1,13 @@
-import { Link } from 'react-router-dom';
-import { posts } from '../data/posts';
+import Link from 'next/link';
+import { posts } from '@/data/posts';
 
-const Logbook = () => {
+export default function Logbook() {
     return (
         <div className="space-y-12">
             <div className="space-y-2">
                 <h1 className="text-4xl font-bold text-white">Logbook</h1>
                 <p className="text-gray-400 font-mono text-sm">
-                    A dump of things I've learned. Expect code snippets and rants about segfaults.
+                    A dump of things I&apos;ve learned. Expect code snippets and rants about segfaults.
                 </p>
             </div>
 
@@ -15,7 +15,7 @@ const Logbook = () => {
                 {posts.map((post) => (
                     <article key={post.id} className="group border-b border-white/5 pb-8 last:border-0">
                         <div className="flex flex-col md:flex-row md:items-baseline justify-between mb-2">
-                            <Link to={`/log/${post.id}`} className="text-xl font-bold text-text-offwhite group-hover:text-amber-400 transition-colors cursor-pointer">
+                            <Link href={`/log/${post.id}`} className="text-xl font-bold text-text-offwhite group-hover:text-amber-400 transition-colors cursor-pointer">
                                 {post.title}
                             </Link>
                             <span className="font-mono text-xs text-gray-600 shrink-0">{post.date}</span>
@@ -29,7 +29,7 @@ const Logbook = () => {
                                     #{tag}
                                 </span>
                             ))}
-                            <Link to={`/log/${post.id}`} className="text-[10px] font-mono text-gray-600 hover:text-white cursor-pointer ml-auto">
+                            <Link href={`/log/${post.id}`} className="text-[10px] font-mono text-gray-600 hover:text-white cursor-pointer ml-auto">
                                 Read more --&gt;
                             </Link>
                         </div>
@@ -38,6 +38,4 @@ const Logbook = () => {
             </div>
         </div>
     );
-};
-
-export default Logbook;
+}
