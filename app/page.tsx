@@ -1,9 +1,9 @@
-import Typewriter from '../components/Typewriter';
-import ProjectCard from '../components/ProjectCard';
-import { Link } from 'react-router-dom';
-import { projects } from '../data/projects';
+import Link from 'next/link';
+import Typewriter from '@/components/Typewriter';
+import ProjectCard from '@/components/ProjectCard';
+import { projects } from '@/data/projects';
 
-const Home = () => {
+export default function Home() {
     const featuredProjects = projects.filter(p => p.featured);
 
     return (
@@ -11,7 +11,7 @@ const Home = () => {
             {/* Hero Section */}
             <section className="min-h-[60vh] flex flex-col justify-center max-w-4xl">
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                    Hi, I’m Sam.<br />
+                    Hi, I&apos;m Sam.<br />
                     <span className="text-gray-400 text-xl md:text-3xl font-normal block mt-4 leading-relaxed">
                         <Typewriter text="Building high-performance systems at the intersection of low-level computing and aviation." delay={500} speed={30} />
                     </span>
@@ -30,7 +30,7 @@ const Home = () => {
             <section>
                 <div className="flex justify-between items-end mb-8">
                     <h2 className="text-2xl font-mono text-white">Featured Projects</h2>
-                    <Link to="/projects" className="text-sm font-mono text-gray-500 hover:text-tech-blue transition-colors">See all --&gt;</Link>
+                    <Link href="/projects" className="text-sm font-mono text-gray-500 hover:text-tech-blue transition-colors">See all --&gt;</Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {featuredProjects.map((project) => (
@@ -48,6 +48,4 @@ const Home = () => {
             </section>
         </div>
     );
-};
-
-export default Home;
+}
