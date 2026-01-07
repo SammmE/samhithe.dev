@@ -1,8 +1,11 @@
 import Typewriter from '../components/Typewriter';
 import ProjectCard from '../components/ProjectCard';
 import { Link } from 'react-router-dom';
+import { projects } from '../data/projects';
 
 const Home = () => {
+    const featuredProjects = projects.filter(p => p.featured);
+
     return (
         <div className="space-y-20">
             {/* Hero Section */}
@@ -30,22 +33,17 @@ const Home = () => {
                     <Link to="/projects" className="text-sm font-mono text-gray-500 hover:text-tech-blue transition-colors">See all --&gt;</Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ProjectCard
-                        title="NeuroKernel"
-                        problem="Bare-metal AI without an Operating System."
-                        stack={["x86 Assembly", "C", "QEMU", "Makefile"]}
-                        hurdle="I wrote a custom OS kernel from scratch specifically optimized to run a Feed-Forward Neural Network, including writing low-level memory allocators and VGA drivers."
-                        tags={["Systems", "AI"]}
-                        link="#"
-                    />
-                    <ProjectCard
-                        title="Autonomous VTOL UAV"
-                        problem="Custom Flight Controller & Vision Integration."
-                        stack={["Python", "C++", "ROS", "CV"]}
-                        hurdle="Designed and flight-tested a custom VTOL drone, engineering the flight controller logic from scratch and tuning PID loops for stabilization."
-                        tags={["Aviation", "Robotics"]}
-                        link="#"
-                    />
+                    {featuredProjects.map((project) => (
+                        <ProjectCard
+                            key={project.id}
+                            title={project.title}
+                            problem={project.problem}
+                            stack={project.stack}
+                            hurdle={project.hurdle}
+                            tags={project.tags}
+                            link={project.link}
+                        />
+                    ))}
                 </div>
             </section>
         </div>

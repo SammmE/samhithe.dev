@@ -11,30 +11,6 @@ const About = () => {
                 </p>
             </div>
 
-            <div className="space-y-8">
-                <h2 className="text-2xl font-mono text-white border-b border-white/10 pb-2">Experience</h2>
-
-                <div className="space-y-2">
-                    <div className="flex justify-between items-baseline">
-                        <h3 className="text-xl font-bold text-text-offwhite">Vision Lead</h3>
-                        <span className="font-mono text-sm text-tech-blue">Frog Force Robotics (FRC 503)</span>
-                    </div>
-                    <p className="text-gray-400 leading-relaxed">
-                        Led the implementation of computer vision (OpenCV) for robot targeting, utilizing AprilTag localization to align mechanisms with high precision during competition.
-                    </p>
-                </div>
-
-                <div className="space-y-2">
-                    <div className="flex justify-between items-baseline">
-                        <h3 className="text-xl font-bold text-text-offwhite">Lead Instructor</h3>
-                        <span className="font-mono text-sm text-tech-blue">iCode</span>
-                    </div>
-                    <p className="text-gray-400 leading-relaxed">
-                        Promoted from intern to Lead Instructor, teaching Python and engineering principles to over 30 students.
-                    </p>
-                </div>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-8">
                 <section>
                     <h2 className="text-xl font-mono text-amber-400 mb-6 flex items-center gap-2">
