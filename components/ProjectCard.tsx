@@ -12,15 +12,12 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ title, problem, stack, hurdle, tags, link, github_link, slug }: ProjectCardProps) => {
-    // Determine the main link destination
-    // If link is present and not '#', use it. Otherwise, use the internal project page.
     const hasExternalLink = link && link !== '#';
     const mainLink = hasExternalLink ? link : `/${slug}`;
     const projectPageLink = `/${slug}`;
 
     return (
         <div className="group relative bg-card-bg border border-white/10 p-6 rounded-lg transition-transform duration-300 hover:-translate-y-1 hover:border-tech-blue/50">
-            {/* Main Clickable Area (Stretched Link) */}
             {hasExternalLink ? (
                 <a href={mainLink} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-0">
                     <span className="sr-only">View Project</span>
@@ -37,7 +34,6 @@ const ProjectCard = ({ title, problem, stack, hurdle, tags, link, github_link, s
                 </h3>
                 
                 <div className="flex gap-3 pointer-events-auto">
-                    {/* GitHub Icon */}
                     {github_link && (
                         <a 
                             href={github_link} 
@@ -52,7 +48,6 @@ const ProjectCard = ({ title, problem, stack, hurdle, tags, link, github_link, s
                         </a>
                     )}
                     
-                    {/* Evaluation/Description Icon */}
                     <Link 
                         href={projectPageLink}
                         className="text-gray-500 hover:text-tech-blue transition-colors p-1" 

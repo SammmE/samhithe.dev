@@ -16,6 +16,13 @@ dist-ssr
 .next/
 out/
 
+# Build artifacts
+*.tsbuildinfo
+build_log.txt
+
+# Velite
+.velite
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
