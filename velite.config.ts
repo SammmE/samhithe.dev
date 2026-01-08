@@ -33,7 +33,7 @@ const posts = defineCollection({
 })
 
 export default defineConfig({
-  root: 'src/content', // Your content folder
+  root: 'content', // Your content folder
   collections: { projects, posts },
   mdx: {
     rehypePlugins: [], 
