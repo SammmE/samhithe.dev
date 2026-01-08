@@ -1,0 +1,63 @@
+PhysicsSim is an advanced 2D physics simulation engine built in Rust, aimed at providing high-performance, real-time particle tracking and visualization.
+
+## 🌟 Features
+
+*   **High-Performance Rendering**: Powered by `wgpu` for efficient, GPU-accelerated rendering.
+*   **Real-Time Physics**: accurate 2D physics simulation including:
+    *   Configurable Gravity `(m/s²)`
+    *   Particle Mass `(kg)`
+    *   Wall Collisions with adjustable bouncing and damping.
+    *   Variable Time-Steps and FPS control (supports slow-motion).
+*   **Interactive Controls**:
+    *   **Drag & Spawn System**: Intuitively create particles by dragging the mouse.
+        *   **Left Drag**: Spawn particle with initial **Velocity**.
+        *   **Right Drag**: Spawn particle with initial **Acceleration**.
+    *   **Live Configuration**: Adjust physics parameters on the fly using the built-in `egui` control panel.
+*   **Visualization & Analysis**:
+    *   Real-time graphing of particle position, velocity, and acceleration using `egui_plot`.
+    *   Visual vectors for velocity and acceleration.
+    *   Performance metrics (FPS, Memory Usage, Render Time).
+
+## 🎮 Controls
+
+### Mouse
+*   **Left Click & Drag**: Create a particle with initial **velocity** based on drag distance/direction.
+*   **Right Click & Drag**: Create a particle with initial **acceleration** based on drag distance/direction.
+
+### Keyboard Shortcuts
+| Key | Action |
+| :--- | :--- |
+| **Space** | Clear Graphs |
+| **P** | Pause/Resume Simulation |
+| **R** | Reset Simulation (Clear all particles) |
+| **Tab** | Select Next Particle for Tracking/Graphing |
+| **F1** | Save Configuration |
+| **F2** | Load Configuration |
+
+## 🛠️ Built With
+
+*   **[Rust](https://www.rust-lang.org/)**: Core language.
+*   **[wgpu](https://wgpu.rs/)**: Cross-platform, safe, pure-Rust graphics API.
+*   **[winit](https://github.com/rust-windowing/winit)**: Window handling.
+*   **[egui](https://github.com/emilk/egui)**: Immediate mode GUI for Rust.
+
+## 🚀 Getting Started
+
+Ensure you have [Rust and Cargo installed](https://rustup.rs/).
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/SammmE/PhysicsSim.git
+    cd PhysicsSim
+    ```
+
+2.  Run the simulation:
+    ```bash
+    cargo run --release
+    ```
+    *(Using `--release` is recommended for optimal performance)*
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
