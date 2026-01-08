@@ -32,24 +32,6 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
                         View Source
                     </Link>
                 )}
-                 {/* Preserving stack display if needed, or maybe it was dynamically added elsewhere? 
-                    The previous simplified example showed stack. 
-                    The original file didn't show stack in the render part I saw (it was commented out?), 
-                    but the user's example had it. I will add it back based on user's example 
-                    but keeping the styling consistent with the current design if possible.
-                    The original file had: 
-                    <article ...>
-                        ... header ...
-                        MDXRemote ...
-                    </article>
-                    The user's Phase 2 example had:
-                    <article ...>
-                        <h1>...</h1>
-                        <div>...stack...</div>
-                        MDXContent
-                    </article>
-                    I will try to combine them. I'll add the stack display below the title/button area.
-                  */}
                  <div className="flex gap-2 mt-4">
                     {project.stack.map(tech => <span key={tech} className="text-sm text-gray-400 border border-gray-700 rounded px-2 py-1">{tech}</span>)}
                 </div>

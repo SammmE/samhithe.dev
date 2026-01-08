@@ -1,73 +1,101 @@
-# React + TypeScript + Vite
+# samhithe.dev
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal portfolio website built with Next.js, showcasing systems engineering projects and technical logs.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS
+- **Content**: Velite (MDX content management)
+- **Language**: TypeScript
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js 20+
+- npm or pnpm
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Installation
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000) to view the site.
+
+### Build
+
+```bash
+npm run build
+```
+
+### Production
+
+```bash
+npm run start
+```
+
+## Project Structure
+
+```
+├── app/                  # Next.js app router pages
+│   ├── about/           # About page
+│   ├── log/             # Blog/logbook pages
+│   ├── projects/        # Projects pages
+│   └── layout.tsx       # Root layout
+├── components/          # React components
+├── content/            # MDX content files
+│   ├── posts/          # Blog posts
+│   └── projects/       # Project documentation
+├── public/             # Static assets
+└── velite.config.ts    # Content configuration
+```
+
+## Content Management
+
+Content is managed through MDX files in the `content/` directory. Velite compiles these at build time into type-safe data.
+
+### Adding a Project
+
+Create a new `.mdx` file in `content/projects/`:
+
+```mdx
+---
+title: Project Name
+problem: What problem does it solve?
+stack: [Tech1, Tech2, Tech3]
+hurdle: Biggest challenge
+tags: [tag1, tag2]
+link: https://example.com
+github_link: https://github.com/username/repo
+featured: true
+---
+
+# Project details...
+```
+
+### Adding a Blog Post
+
+Create a new `.mdx` file in `content/posts/`:
+
+```mdx
+---
+title: Post Title
+date: YYYY-MM-DD
+tags: [tag1, tag2]
+preview: Brief description
+---
+
+# Post content...
+```
+
+## License
+
+Private repository - All rights reserved
