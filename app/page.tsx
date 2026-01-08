@@ -8,7 +8,6 @@ export default function Home() {
 
     return (
         <div className="space-y-20">
-            {/* Hero Section */}
             <section className="min-h-[60vh] flex flex-col justify-center max-w-4xl">
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
                     Hi, I&apos;m Sam.<br />
@@ -26,7 +25,6 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Featured Projects */}
             <section>
                 <div className="flex justify-between items-end mb-8">
                     <h2 className="text-2xl font-mono text-white">Featured Projects</h2>
