@@ -98,4 +98,4 @@ preview: Brief description
 
 ## License
 
-Private repository - All rights reserved
+Just use the code, but change the name... I have the copyright to look cool
