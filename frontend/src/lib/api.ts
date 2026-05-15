@@ -1,6 +1,6 @@
 import type { Project, ArticleMeta, Article } from './types';
 
-const API_BASE = import.meta.env.PUBLIC_API_BASE ?? 'http://localhost:3000';
+const API_BASE = import.meta.env.PUBLIC_API_BASE ?? 'https://api.samhithe.dev/';
 
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -12,19 +12,19 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export function fetchProjects(): Promise<Project[]> {
-	return apiFetch<Project[]>('/projects');
+	return apiFetch<Project[]>('projects');
 }
 
 export function fetchArticles(): Promise<ArticleMeta[]> {
-	return apiFetch<ArticleMeta[]>('/articles');
+	return apiFetch<ArticleMeta[]>('articles');
 }
 
 export function fetchArticle(id: string): Promise<Article> {
-	return apiFetch<Article>(`/articles/${encodeURIComponent(id)}`);
+	return apiFetch<Article>(`articles/${encodeURIComponent(id)}`);
 }
 
 export function recordHit(id: string): Promise<{ counted: boolean }> {
-	return apiFetch<{ counted: boolean }>(`/hit/${encodeURIComponent(id)}`, {
+	return apiFetch<{ counted: boolean }>(`hit/${encodeURIComponent(id)}`, {
 		method: 'POST'
 	});
 }

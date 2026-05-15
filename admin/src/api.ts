@@ -1,9 +1,9 @@
 import type { Article, ArticleMeta, ChartPoint, Project, ProjectInput, Stats } from "./types";
 
-const defaultBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "https://api.samhithe.dev/";
 
 export class ApiClient {
-  baseUrl = defaultBaseUrl;
+  baseUrl = API_BASE;
   token = localStorage.getItem("firebaseToken") ?? "";
 
   saveToken(token: string) {
@@ -12,27 +12,27 @@ export class ApiClient {
   }
 
   async articles() {
-    return this.request<ArticleMeta[]>("/articles");
+    return this.request<ArticleMeta[]>("articles");
   }
 
   async article(id: string) {
-    return this.request<Article>(`/articles/${encodeURIComponent(id)}`);
+    return this.request<Article>(`articles/${encodeURIComponent(id)}`);
   }
 
   async projects() {
-    return this.request<Project[]>("/projects");
+    return this.request<Project[]>("projects");
   }
 
   async stats() {
-    return this.request<Stats>("/admin/stats", { admin: true });
+    return this.request<Stats>("admin/stats", { admin: true });
   }
 
   async charts() {
-    return this.request<ChartPoint[]>("/admin/charts", { admin: true });
+    return this.request<ChartPoint[]>("admin/charts", { admin: true });
   }
 
   async createArticle(payload: Record<string, unknown>) {
-    return this.request<ArticleMeta>("/admin/articles", {
+    return this.request<ArticleMeta>("admin/articles", {
       admin: true,
       method: "POST",
       body: payload
@@ -40,7 +40,7 @@ export class ApiClient {
   }
 
   async createProject(payload: ProjectInput) {
-    return this.request<Project>("/admin/projects", {
+    return this.request<Project>("admin/projects", {
       admin: true,
       method: "POST",
       body: payload
@@ -48,7 +48,7 @@ export class ApiClient {
   }
 
   async updateProject(id: string, payload: Record<string, unknown>) {
-    return this.request<Project>(`/admin/projects/${encodeURIComponent(id)}`, {
+    return this.request<Project>(`admin/projects/${encodeURIComponent(id)}`, {
       admin: true,
       method: "PATCH",
       body: payload
