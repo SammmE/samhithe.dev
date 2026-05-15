@@ -1,101 +1,42 @@
-# samhithe.dev
+# sv
 
-Personal portfolio website built with Next.js, showcasing systems engineering projects and technical logs.
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-## Tech Stack
+## Creating a project
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **Content**: Velite (MDX content management)
-- **Language**: TypeScript
+If you're seeing this, you've probably already done this step. Congrats!
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20+
-- npm or pnpm
-
-### Installation
-
-```bash
-npm install
+```sh
+# create a new project
+npx sv create my-app
 ```
 
-### Development
+To recreate this project with the same configuration:
 
-```bash
+```sh
+# recreate this project
+npx sv@0.15.3 create --template minimal --types ts --add tailwindcss="plugins:typography" --install npm frontend
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```sh
 npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the site.
+## Building
 
-### Build
+To create a production version of your app:
 
-```bash
+```sh
 npm run build
 ```
 
-### Production
+You can preview the production build with `npm run preview`.
 
-```bash
-npm run start
-```
-
-## Project Structure
-
-```
-├── app/                  # Next.js app router pages
-│   ├── about/           # About page
-│   ├── log/             # Blog/logbook pages
-│   ├── projects/        # Projects pages
-│   └── layout.tsx       # Root layout
-├── components/          # React components
-├── content/            # MDX content files
-│   ├── posts/          # Blog posts
-│   └── projects/       # Project documentation
-├── public/             # Static assets
-└── velite.config.ts    # Content configuration
-```
-
-## Content Management
-
-Content is managed through MDX files in the `content/` directory. Velite compiles these at build time into type-safe data.
-
-### Adding a Project
-
-Create a new `.mdx` file in `content/projects/`:
-
-```mdx
----
-title: Project Name
-problem: What problem does it solve?
-stack: [Tech1, Tech2, Tech3]
-hurdle: Biggest challenge
-tags: [tag1, tag2]
-link: https://example.com
-github_link: https://github.com/username/repo
-featured: true
----
-
-# Project details...
-```
-
-### Adding a Blog Post
-
-Create a new `.mdx` file in `content/posts/`:
-
-```mdx
----
-title: Post Title
-date: YYYY-MM-DD
-tags: [tag1, tag2]
-preview: Brief description
----
-
-# Post content...
-```
-
-## License
-
-Just use the code, but change the name... I have the copyright to look cool
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

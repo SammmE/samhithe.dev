@@ -1,0 +1,4 @@
+interface:
+  display_name: "Firebase RS"
+  short_description: "Build Rust apps with firebase-rs"
+  default_prompt: "Use $firebase-rs to add Firebase Realtime Database access to this Rust project."

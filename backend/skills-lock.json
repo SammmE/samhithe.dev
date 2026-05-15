@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "axum": {
+      "source": "claude-dev-suite/claude-dev-suite",
+      "sourceType": "github",
+      "skillPath": "skills/backend-frameworks/axum/SKILL.md",
+      "computedHash": "e95e05c36ed7f38cd9bc890299b57991b218bd24887c7bb5915e0eb3cb19a5fb"
+    }
+  }
+}

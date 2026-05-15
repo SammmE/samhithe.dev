@@ -1,31 +1,27 @@
 [package]
-name = "samhithe-dev-backend"
+name = "backend"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-# Web framework
-axum = "0.7"
-tokio = { version = "1", features = ["full"] }
-tower = "0.4"
-tower-http = { version = "0.5", features = ["cors"] }
-
-# Serialization
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-
-# Database
-libsql = "0.4"
-rusqlite = { version = "0.31", features = ["bundled"] }
-
-# Time
-chrono = { version = "0.4", features = ["serde"] }
-
-# Utilities
-dotenvy = "0.15"
-reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
-base64 = "0.21"
-
-# Logging
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+axum = "0.8.9"
+base64 = "0.22.1"
+chrono = { version = "0.4.44", features = ["serde"] }
+dotenvy = "0.15.7"
+firebase-rs = "2.2.5"
+jsonwebtoken = { version = "10.4.0", features = ["rust_crypto"] }
+pulldown-cmark = "0.13.0"
+regex = "1.12.2"
+reqwest = { version = "0.13.3", features = ["json"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+serde_urlencoded = "0.7.1"
+sha2 = "0.11.0-pre.5"
+thiserror = "2.0.17"
+tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "net", "signal", "sync", "time"] }
+tower = "0.5.2"
+tower-http = { version = "0.6.10", features = ["cors", "trace", "compression-full"] }
+tower_governor = "0.8.0"
+tracing = "0.1.43"
+tracing-subscriber = { version = "0.3.22", features = ["env-filter"] }
+uuid = { version = "1.19.0", features = ["v4", "serde"] }

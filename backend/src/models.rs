@@ -1,72 +1,122 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-/// Represents a portfolio project
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ReadmeType {
+    Url,
+    Raw,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum HealthStatus {
+    Unknown,
+    Healthy,
+    Broken,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Project {
-    pub id: u32,
-    pub title: String,
-    pub repo_url: String,
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub demo_link: Option<String>,
+    pub repo_link: Option<String>,
+    pub readme_type: ReadmeType,
     pub readme_content: String,
-    pub demo_url: Option<String>,
-    pub view_count: u32,
-    pub priority: u8,
-    pub created_at: DateTime<Utc>,
+    pub health_status: HealthStatus,
+    pub last_health_check: Option<DateTime<Utc>>,
 }
 
-/// Represents a log entry
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Log {
-    pub id: u32,
-    pub content: String,
-    pub view_count: u32,
-    pub created_at: DateTime<Utc>,
-}
-
-/// System statistics response
-#[derive(Serialize)]
-pub struct SystemStats {
-    pub uptime_seconds: u64,
-    pub memory_usage_mb: u32,
-    pub engine: String,
-    pub persistence: String,
-    pub buffered_views_size: usize,
-}
-
-/// Request body for creating a new project
-#[derive(Deserialize)]
-pub struct CreateProject {
-    pub title: String,
-    pub repo_url: String,
-    pub demo_url: Option<String>,
-    pub priority: Option<u8>,
-}
-
-/// Request body for updating a project
-#[derive(Deserialize)]
-pub struct UpdateProject {
-    pub title: Option<String>,
-    pub repo_url: Option<String>,
-    pub demo_url: Option<String>,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProjectPatch {
+    pub name: Option<String>,
+    pub description: Option<String>,
+    pub demo_link: Option<Option<String>>,
+    pub repo_link: Option<Option<String>>,
+    pub readme_type: Option<ReadmeType>,
     pub readme_content: Option<String>,
-    pub priority: Option<u8>,
 }
 
-/// Request body for creating a new log
-#[derive(Deserialize)]
-pub struct CreateLog {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ProjectInput {
+    pub id: String,
+    pub name: String,
+    pub description: String,
+    pub demo_link: Option<String>,
+    pub repo_link: Option<String>,
+    pub readme_type: ReadmeType,
+    pub readme_content: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ArticleMeta {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    pub date: DateTime<Utc>,
+    pub word_count: u64,
+    pub image_count: u64,
+    pub heading_count: u64,
+    pub views: u64,
+    pub is_published: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ArticleContent {
+    pub id: String,
+    pub abstract_markdown: String,
     pub content: String,
 }
 
-/// Request body for updating a log
-#[derive(Deserialize)]
-pub struct UpdateLog {
-    pub content: Option<String>,
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Article {
+    #[serde(flatten)]
+    pub meta: ArticleMeta,
+    pub abstract_markdown: String,
+    pub content: String,
 }
 
-/// GitHub API response for README content
-#[derive(Serialize, Deserialize, Debug)]
-pub struct GithubReadme {
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AdminArticleInput {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    pub abstract_markdown: String,
     pub content: String,
-    pub encoding: String,
+    pub date: Option<DateTime<Utc>>,
+    pub is_published: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AnalyticsEvent {
+    pub id: String,
+    pub article_id: String,
+    pub timestamp: DateTime<Utc>,
+    pub ip_hash: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StatsResponse {
+    pub global_views: u64,
+    pub best_performer: Option<ArticleMeta>,
+    pub trending: u64,
+    pub broken_projects: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChartPoint {
+    pub date: String,
+    pub views: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HitResponse {
+    pub counted: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HealthResponse {
+    pub status: &'static str,
 }
