@@ -6,6 +6,9 @@ export interface Project {
 	repo_link: string | null;
 	readme_type: 'url' | 'raw';
 	readme_content: string;
+	importance: number;
+	portfolio_entry: string;
+	tags: string[];
 	health_status: 'unknown' | 'healthy' | 'broken';
 	last_health_check: string | null;
 }
