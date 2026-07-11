@@ -56,6 +56,7 @@ impl Config {
                 })
                 .split(',')
                 .map(str::trim)
+                .map(|origin| origin.trim_end_matches('/'))
                 .filter(|origin| !origin.is_empty())
                 .map(ToOwned::to_owned)
                 .collect(),
