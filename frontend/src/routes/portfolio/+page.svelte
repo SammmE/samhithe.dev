@@ -74,8 +74,8 @@
 					</div>
 
 					{#if project.tags && project.tags.length > 0}
-						<div class="flex flex-wrap gap-2 mt-auto pt-4">
-							{#each project.tags as tag}
+						<div class="flex flex-wrap gap-2 mt-auto pt-4 items-center">
+							{#each project.tags.slice(0, 10) as tag}
 								<button 
 									onclick={() => handleTagClick(tag)}
 									class="px-2 py-1 bg-surface text-on-surface-variant text-label-sm border border-white/10 hover:text-primary hover:border-primary/50 transition-colors cursor-pointer"
@@ -83,6 +83,11 @@
 									#{tag}
 								</button>
 							{/each}
+							{#if project.tags.length > 4}
+								<span class="text-on-surface-variant text-label-sm px-1 opacity-70">
+									...
+								</span>
+							{/if}
 						</div>
 					{/if}
 				</div>
