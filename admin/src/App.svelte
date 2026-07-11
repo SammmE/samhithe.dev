@@ -245,7 +245,10 @@
         demo_link: selectedProject.demo_link,
         repo_link: selectedProject.repo_link,
         readme_type: selectedProject.readme_type,
-        readme_content: selectedProject.readme_content
+        readme_content: selectedProject.readme_content,
+        importance: selectedProject.importance,
+        portfolio_entry: selectedProject.portfolio_entry,
+        tags: selectedProject.tags
       });
       projects = projects.map((project) => (project.id === updated.id ? updated : project));
       selectedProject = updated;
@@ -283,7 +286,10 @@
       demo_link: null,
       repo_link: null,
       readme_type: "raw",
-      readme_content: ""
+      readme_content: "",
+      importance: 0,
+      portfolio_entry: "",
+      tags: []
     };
   }
 
@@ -512,6 +518,14 @@
               <label>Repo link<input bind:value={projectForm.repo_link} /></label>
             </div>
             <div class="grid-two">
+              <label>Importance<input type="number" bind:value={projectForm.importance} required /></label>
+              <label>Tags (comma separated)<input value={projectForm.tags.join(', ')} on:input={(e) => projectForm.tags = e.target.value.split(',').map(t => t.trim()).filter(Boolean)} /></label>
+            </div>
+            <div class="editor-panel compact">
+              <span class="field-label">Portfolio Entry (Markdown)</span>
+              <MarkdownEditor {carta} bind:value={projectForm.portfolio_entry} mode="tabs" theme="admin" placeholder="Describe this project for the portfolio" />
+            </div>
+            <div class="grid-two">
               <label>
                 README mode
                 <select bind:value={projectForm.readme_type}>
@@ -577,6 +591,14 @@
             <div class="grid-two">
               <label>Demo link<input bind:value={selectedProject.demo_link} /></label>
               <label>Repo link<input bind:value={selectedProject.repo_link} /></label>
+            </div>
+            <div class="grid-two">
+              <label>Importance<input type="number" bind:value={selectedProject.importance} required /></label>
+              <label>Tags (comma separated)<input value={selectedProject.tags.join(', ')} on:input={(e) => selectedProject.tags = e.target.value.split(',').map(t => t.trim()).filter(Boolean)} /></label>
+            </div>
+            <div class="editor-panel compact">
+              <span class="field-label">Portfolio Entry (Markdown)</span>
+              <MarkdownEditor {carta} bind:value={selectedProject.portfolio_entry} mode="tabs" theme="admin" placeholder="Describe this project for the portfolio" />
             </div>
             <label>
               README mode
