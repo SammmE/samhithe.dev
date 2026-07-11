@@ -77,6 +77,9 @@ impl Firestore {
             repo_link: input.repo_link,
             readme_type: input.readme_type,
             readme_content: input.readme_content,
+            importance: input.importance,
+            portfolio_entry: input.portfolio_entry,
+            tags: input.tags,
             health_status: HealthStatus::Unknown,
             last_health_check: None,
         };
@@ -150,6 +153,15 @@ impl Firestore {
         }
         if let Some(value) = patch.readme_content {
             project.readme_content = value;
+        }
+        if let Some(value) = patch.importance {
+            project.importance = value;
+        }
+        if let Some(value) = patch.portfolio_entry {
+            project.portfolio_entry = value;
+        }
+        if let Some(value) = patch.tags {
+            project.tags = value;
         }
 
         self.put_document("projects", id, &project_fields(&project))
@@ -421,6 +433,9 @@ impl TryFrom<Document> for Project {
             repo_link: str_field(&doc, "repo_link"),
             readme_type: enum_field(&doc, "readme_type", ReadmeType::Raw)?,
             readme_content: str_field(&doc, "readme_content").unwrap_or_default(),
+            importance: int_field(&doc, "importance") as u32,
+            portfolio_entry: str_field(&doc, "portfolio_entry").unwrap_or_default(),
+            tags: array_field_str(&doc, "tags"),
             health_status: enum_field(&doc, "health_status", HealthStatus::Unknown)?,
             last_health_check: timestamp_field(&doc, "last_health_check"),
         })
@@ -490,6 +505,9 @@ fn project_fields(project: &Project) -> Map<String, Value> {
             string_value(enum_to_str(&project.readme_type)),
         ),
         ("readme_content", string_value(&project.readme_content)),
+        ("importance", int_value(project.importance as u64)),
+        ("portfolio_entry", string_value(&project.portfolio_entry)),
+        ("tags", array_value_str(&project.tags)),
         (
             "health_status",
             string_value(enum_to_str(&project.health_status)),
@@ -630,4 +648,27 @@ where
         Some(value) => serde_json::from_value(Value::String(value)).map_err(AppError::upstream),
         None => Ok(fallback),
     }
+}
+
+fn array_value_str(values: &[String]) -> Value {
+    let elements: Vec<Value> = values.iter().map(|s| string_value(s)).collect();
+    if elements.is_empty() {
+        json!({ "arrayValue": {} })
+    } else {
+        json!({ "arrayValue": { "values": elements } })
+    }
+}
+
+fn array_field_str(doc: &Document, key: &str) -> Vec<String> {
+    doc.fields
+        .get(key)
+        .and_then(|value| value.get("arrayValue"))
+        .and_then(|value| value.get("values"))
+        .and_then(Value::as_array)
+        .map(|arr| {
+            arr.iter()
+                .filter_map(|item| item.get("stringValue").and_then(Value::as_str).map(ToOwned::to_owned))
+                .collect()
+        })
+        .unwrap_or_default()
 }

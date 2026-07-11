@@ -25,6 +25,9 @@ pub struct Project {
     pub repo_link: Option<String>,
     pub readme_type: ReadmeType,
     pub readme_content: String,
+    pub importance: u32,
+    pub portfolio_entry: String,
+    pub tags: Vec<String>,
     pub health_status: HealthStatus,
     pub last_health_check: Option<DateTime<Utc>>,
 }
@@ -37,6 +40,9 @@ pub struct ProjectPatch {
     pub repo_link: Option<Option<String>>,
     pub readme_type: Option<ReadmeType>,
     pub readme_content: Option<String>,
+    pub importance: Option<u32>,
+    pub portfolio_entry: Option<String>,
+    pub tags: Option<Vec<String>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -48,6 +54,9 @@ pub struct ProjectInput {
     pub repo_link: Option<String>,
     pub readme_type: ReadmeType,
     pub readme_content: String,
+    pub importance: u32,
+    pub portfolio_entry: String,
+    pub tags: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
