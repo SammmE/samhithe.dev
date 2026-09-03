@@ -21,7 +21,7 @@
 </script>
 
 <svelte:head>
-  <title>Samhith | Software Engineer</title>
+  <title>Sam Hite - personal site</title>
   <meta
     name="description"
     content="Software engineer focused on high-performance infrastructure, scalable backend services, and clean, functional interfaces."
@@ -34,7 +34,7 @@
 >
   <div class="max-w-3xl space-y-8">
     <h1 class="text-5xl md:text-[72px] font-bold tracking-tight text-on-surface mb-2">
-      Hello!
+      Hello!t
     </h1>
     <p class="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed">
       I'm Samhith, a developer in high school who's interested in Computer
